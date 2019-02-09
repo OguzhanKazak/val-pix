@@ -1,16 +1,23 @@
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import java.awt.datatransfer.*;
+import java.awt.Toolkit;
 
 public class GUI implements KeyListener {
 
@@ -22,14 +29,16 @@ public class GUI implements KeyListener {
 	private JPanel colorPanel;
 	private JPanel mainPanel;
 	
-	JTextPane labelRGB;
-	JTextPane labelHex;
-	JTextPane infoLabel;
+	JLabel labelRGB;
+	JLabel labelHex;
+	JLabel infoLabel;
+	
+	Button copyToClipBoardButton;
 	
 	
 	public GUI() {
 		
-		//MAÝN FRAME WÝTH LABELS
+		//MAï¿½N FRAME Wï¿½TH LABELS
 		mainFrame = new JFrame("ValPix");
 		
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,30 +47,28 @@ public class GUI implements KeyListener {
 		
 		mainPanel = new JPanel();
 		
-		infoLabel = new JTextPane();
-		labelRGB = new JTextPane();
-		labelHex = new JTextPane();
+		infoLabel = new JLabel("First click here to focus program then press space to freeze value");
+		labelRGB = new JLabel();
+		labelHex = new JLabel();
 		
-		infoLabel.setContentType("text/html"); 
-		infoLabel.setText("<html>First click here to focus program then press space to freeze value</html>");
-		infoLabel.setEditable(false); 
-		infoLabel.setBackground(null); 
-		infoLabel.setBorder(null); 
-		
-		labelRGB.setContentType("text/html"); 
-		labelRGB.setEditable(false); 
-		labelRGB.setBackground(null); 
-		labelRGB.setBorder(null); 
-		
-		labelHex.setContentType("text/html"); 
-		labelHex.setEditable(false); 
-		labelHex.setBackground(null); 
-		labelHex.setBorder(null); 
+		copyToClipBoardButton = new Button("Copy Values");
+		copyToClipBoardButton.enable(false);
+		copyToClipBoardButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StringSelection stringSelection = new StringSelection(labelRGB.getText()+" "+labelHex.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);
+			}
+		});
 		
 		mainPanel.setBorder(new EmptyBorder(new Insets(10, 20, 25, 20)));
 		mainPanel.add(infoLabel);
 		mainPanel.add(labelRGB);
 		mainPanel.add(labelHex);
+		mainPanel.add(copyToClipBoardButton);
+		
 		mainFrame.add(mainPanel);
 		
 		mainFrame.setLayout(new BoxLayout(mainFrame.getContentPane(),BoxLayout.Y_AXIS));
@@ -83,9 +90,7 @@ public class GUI implements KeyListener {
 		
 		colorFrame.setVisible(true);
 		
-		infoLabel.addKeyListener(this);
-		labelHex.addKeyListener(this);
-		labelRGB.addKeyListener(this);
+		mainFrame.addKeyListener(this);
 
 	}
 	
@@ -94,12 +99,12 @@ public class GUI implements KeyListener {
 	}
 	
 	public void setRGBLabel(Color color) {
-		labelRGB.setText("<html>RGB value: "+color.getRed()+" "+color.getGreen()+" "+color.getBlue()+"</html>");
+		labelRGB.setText("RGB value: "+color.getRed()+" "+color.getGreen()+" "+color.getBlue());
 	}
 	
 	public void setHexLabel(Color color) {
 		String hex = "Hex value: #"+Integer.toHexString(color.getRGB()).substring(2);
-		labelHex.setText("<html>"+hex+"</html>");
+		labelHex.setText(hex);
 	}
 	
 	public void followMouse(int x,int y) {
@@ -118,6 +123,7 @@ public class GUI implements KeyListener {
 		System.out.println("pressed");
 		if(e.getKeyCode() == KeyEvent.VK_SPACE && !freeze) {			
 			freeze = true;
+			copyToClipBoardButton.enable(true);
 		}
 		
 	}
