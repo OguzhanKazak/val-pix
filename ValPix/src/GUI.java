@@ -12,7 +12,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -52,7 +51,7 @@ public class GUI implements KeyListener {
 		labelHex = new JLabel();
 		
 		copyToClipBoardButton = new Button("Copy Values");
-		copyToClipBoardButton.enable(false);
+		copyToClipBoardButton.setEnabled(false);
 		copyToClipBoardButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -123,7 +122,7 @@ public class GUI implements KeyListener {
 		System.out.println("pressed");
 		if(e.getKeyCode() == KeyEvent.VK_SPACE && !freeze) {			
 			freeze = true;
-			copyToClipBoardButton.enable(true);
+			copyToClipBoardButton.setEnabled(true);
 		}
 		
 	}
